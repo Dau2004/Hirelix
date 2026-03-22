@@ -3,7 +3,7 @@
 Hirelix is a full-stack recruitment management system built for HR teams and job applicants. It automates applicant screening and ranking using NLP-based scoring, giving HR professionals objective, ranked candidate lists instantly.
 
 ---
-
+VkXoKCX8D20pFoZY
 ## Features
 
 ### HR Side
