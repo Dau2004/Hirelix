@@ -61,5 +61,5 @@ def job_rankings(request, pk):
         .select_related('score')
         .order_by('-score__final_score')
     )
-    serializer = RankingSerializer(applications, many=True)
+    serializer = RankingSerializer(applications, many=True, context={'request': request})
     return Response(serializer.data)

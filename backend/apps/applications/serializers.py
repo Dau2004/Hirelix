@@ -52,5 +52,6 @@ class RankingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = [
-            'id', 'candidate_code', 'job_title', 'status', 'submitted_at', 'score',
+            'id', 'candidate_code', 'job_title', 'status', 'submitted_at',
+            'cover_letter', 'resume_file', 'score',
         ]

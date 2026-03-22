@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Download, X, Users, CheckCircle,
-  AlertCircle, TrendingUp,
+  AlertCircle, TrendingUp, FileText, ExternalLink,
 } from 'lucide-react';
 import { jobRankings, getJob } from '../../api/jobs';
 import { updateApplicationStatus } from '../../api/applications';
@@ -90,6 +90,7 @@ function ScoreDrawer({ app, onClose }) {
   return (
     <div style={d.overlay} onClick={onClose}>
       <div style={d.panel} onClick={e => e.stopPropagation()}>
+        {/* Header */}
         <div style={d.header}>
           <div>
             <p style={d.codeLabel}>Candidate</p>
@@ -98,6 +99,24 @@ function ScoreDrawer({ app, onClose }) {
           <button style={d.close} onClick={onClose}><X size={18} /></button>
         </div>
 
+        {/* Resume download — always at top */}
+        {app.resume_file && (
+          <a href={app.resume_file} target="_blank" rel="noreferrer" style={d.resumeBtn}>
+            <ExternalLink size={14} /> View / Download Resume
+          </a>
+        )}
+
+        {/* Cover Letter — full text */}
+        {app.cover_letter && (
+          <div style={{ margin: '1.25rem 0', paddingBottom: '1.25rem', borderBottom: '1px solid var(--gray-100)' }}>
+            <div style={d.listHead}><FileText size={14} color="var(--action)" /> Cover Letter</div>
+            <p style={{ ...d.summary, maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', margin: 0 }}>
+              {app.cover_letter}
+            </p>
+          </div>
+        )}
+
+        {/* Score */}
         <div style={d.scoreRow}>
           <div style={d.bigWrap}>
             <span style={d.big}>{score?.final_score}</span>
@@ -133,24 +152,25 @@ function ScoreDrawer({ app, onClose }) {
   );
 }
 const d = {
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', zIndex: 200 },
-  panel:   { background: 'var(--white)', width: '100%', maxWidth: '420px', height: '100%', overflowY: 'auto', padding: '2rem', boxShadow: 'var(--shadow-xl)' },
-  header:  { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' },
+  overlay:   { position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', zIndex: 200 },
+  panel:     { background: 'var(--white)', width: '100%', maxWidth: '420px', height: '100%', overflowY: 'auto', padding: '2rem', boxShadow: 'var(--shadow-xl)' },
+  header:    { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' },
   codeLabel: { fontSize: '0.72rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' },
-  code:    { fontFamily: 'monospace', fontSize: '1.1rem', fontWeight: 800, color: 'var(--action)' },
-  close:   { padding: '0.35rem', border: 'none', background: 'var(--gray-100)', borderRadius: 'var(--radius)', cursor: 'pointer', color: 'var(--gray-500)', display: 'flex' },
-  scoreRow: { display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', paddingBottom: '1.25rem', borderBottom: '1px solid var(--gray-100)' },
-  bigWrap:  { display: 'flex', alignItems: 'baseline', gap: '0.15rem' },
-  big:      { fontSize: '2.75rem', fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.04em' },
-  bigOf:    { fontSize: '1rem', color: 'var(--gray-400)' },
-  badge:    { display: 'inline-block', padding: '0.3rem 0.85rem', borderRadius: '100px', fontSize: '0.78rem', fontWeight: 700 },
-  bars:     { marginBottom: '1.25rem' },
-  summary:  { fontSize: '0.84rem', color: 'var(--gray-500)', lineHeight: 1.7, background: 'var(--gray-50)', padding: '0.85rem', borderRadius: 'var(--radius)', marginBottom: '1rem' },
-  list:     { marginBottom: '1rem' },
-  listHead: { display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: 'var(--gray-700)', marginBottom: '0.5rem' },
-  item:     { display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.84rem', color: 'var(--gray-600)', padding: '0.25rem 0' },
-  dotG:     { width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary)', flexShrink: 0, marginTop: '6px' },
-  dotR:     { width: '6px', height: '6px', borderRadius: '50%', background: '#fca5a5',        flexShrink: 0, marginTop: '6px' },
+  code:      { fontFamily: 'monospace', fontSize: '1.1rem', fontWeight: 800, color: 'var(--action)' },
+  close:     { padding: '0.35rem', border: 'none', background: 'var(--gray-100)', borderRadius: 'var(--radius)', cursor: 'pointer', color: 'var(--gray-500)', display: 'flex' },
+  scoreRow:  { display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', paddingBottom: '1.25rem', borderBottom: '1px solid var(--gray-100)' },
+  bigWrap:   { display: 'flex', alignItems: 'baseline', gap: '0.15rem' },
+  big:       { fontSize: '2.75rem', fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.04em' },
+  bigOf:     { fontSize: '1rem', color: 'var(--gray-400)' },
+  badge:     { display: 'inline-block', padding: '0.3rem 0.85rem', borderRadius: '100px', fontSize: '0.78rem', fontWeight: 700 },
+  bars:      { marginBottom: '1.25rem' },
+  summary:   { fontSize: '0.84rem', color: 'var(--gray-500)', lineHeight: 1.7, background: 'var(--gray-50)', padding: '0.85rem', borderRadius: 'var(--radius)', marginBottom: '1rem' },
+  list:      { marginBottom: '1rem' },
+  listHead:  { display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: 'var(--gray-700)', marginBottom: '0.5rem' },
+  item:      { display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.84rem', color: 'var(--gray-600)', padding: '0.25rem 0' },
+  dotG:      { width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary)', flexShrink: 0, marginTop: '6px' },
+  dotR:      { width: '6px', height: '6px', borderRadius: '50%', background: '#fca5a5',        flexShrink: 0, marginTop: '6px' },
+  resumeBtn: { display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.75rem', padding: '0.55rem 1rem', borderRadius: 'var(--radius)', background: 'var(--action)', color: '#fff', fontSize: '0.82rem', fontWeight: 600, textDecoration: 'none' },
 };
 
 /* ── main component ── */
@@ -176,6 +196,62 @@ export default function Rankings() {
     } finally {
       setUpdatingId(null);
     }
+  };
+
+  const downloadReport = (app) => {
+    const sc = app.score;
+    const cfg = getScoreConfig(parseFloat(sc?.final_score || 0));
+    const bar = (label, val) => `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+          <span>${label}</span><strong>${val}/100</strong>
+        </div>
+        <div style="height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${val}%;background:#00796b;border-radius:4px"></div>
+        </div>
+      </div>`;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+      <title>Hirelix Report — ${app.candidate_code}</title>
+      <style>body{font-family:Arial,sans-serif;color:#1f2937;max-width:720px;margin:40px auto;padding:0 24px}
+        h1{color:#1a237e;font-size:22px;margin-bottom:4px}
+        .meta{color:#6b7280;font-size:13px;margin-bottom:24px}
+        .section{margin-bottom:24px;padding:16px;border:1px solid #e5e7eb;border-radius:8px}
+        .section h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;margin:0 0 12px}
+        .badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:13px;font-weight:700}
+        .score-big{font-size:48px;font-weight:900;color:#1a237e}
+        ul{margin:0;padding-left:16px}li{font-size:14px;margin-bottom:4px}
+        .cover{font-size:13px;line-height:1.7;white-space:pre-wrap;color:#374151}
+        @media print{@page{margin:20mm}}
+      </style></head><body>
+      <h1>Applicant Assessment Report</h1>
+      <div class="meta">
+        Candidate: <strong>${app.candidate_code}</strong> &nbsp;|&nbsp;
+        Position: <strong>${app.job_title}</strong> &nbsp;|&nbsp;
+        Status: <strong>${app.status}</strong> &nbsp;|&nbsp;
+        Date: ${new Date().toLocaleDateString()}
+      </div>
+      <div class="section">
+        <h2>Overall Score</h2>
+        <span class="score-big">${sc?.final_score || 0}</span><span style="font-size:18px;color:#9ca3af">/100</span>
+        &nbsp;&nbsp;<span class="badge" style="background:${cfg.bg};color:${cfg.color}">${cfg.label}</span>
+      </div>
+      <div class="section">
+        <h2>Score Breakdown</h2>
+        ${bar('Qualifications', sc?.qualification_score || 0)}
+        ${bar('Experience', sc?.experience_score || 0)}
+        ${bar('Skills', sc?.skills_score || 0)}
+        ${bar('Cover Letter', sc?.cover_letter_score || 0)}
+        ${bar('Overall Impression', sc?.overall_score || 0)}
+      </div>
+      ${sc?.summary ? `<div class="section"><h2>Summary</h2><p class="cover">${sc.summary}</p></div>` : ''}
+      ${sc?.strengths?.length ? `<div class="section"><h2>Strengths</h2><ul>${sc.strengths.map(s => `<li>${s}</li>`).join('')}</ul></div>` : ''}
+      ${sc?.gaps?.length ? `<div class="section"><h2>Areas for Improvement</h2><ul>${sc.gaps.map(g => `<li>${g}</li>`).join('')}</ul></div>` : ''}
+      ${app.cover_letter ? `<div class="section"><h2>Cover Letter</h2><p class="cover">${app.cover_letter}</p></div>` : ''}
+      <script>window.onload=()=>window.print()</script>
+    </body></html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const exportCSV = () => {
@@ -297,13 +373,18 @@ export default function Rankings() {
                       )}
                     </td>
 
-                    {/* Score detail */}
+                    {/* Actions */}
                     <td style={s.td}>
-                      {app.score && (
+                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                         <button style={s.detailBtn} onClick={() => setSelected(app)}>
-                          View Score
+                          View Details
                         </button>
-                      )}
+                        {app.score && (
+                          <button style={{ ...s.detailBtn, background: 'var(--action)', color: '#fff', border: 'none' }} onClick={() => downloadReport(app)}>
+                            <Download size={12} /> Report
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
